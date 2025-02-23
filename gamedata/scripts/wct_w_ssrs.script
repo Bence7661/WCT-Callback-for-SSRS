@@ -1,0 +1,26 @@
+if weapon_cover_tilt then
+    function actor_on_weapon_before_tilt(wpn, flags)
+		local max_dist = max_dist or 10
+		local ray = ray_pick()
+		ray:set_flags(3)
+		ray:set_range(max_dist)
+		ray:set_position(device().cam_pos)
+		ray:set_direction(device().cam_dir)
+		ray:set_ignore_object(db.actor)
+	
+		local fake_grenade_clsid = clsid.wpn_grenade_fake
+	
+		local res = ray:query()
+	
+		if not res then
+			flags.enabled = false
+		end
+	
+		local rayObj = ray:get_object()
+	
+		if rayObj and rayObj:clsid() == fake_grenade_clsid then
+			flags.enabled = false
+		end
+	end
+    weapon_cover_tilt.add_callback("actor_on_weapon_before_tilt", actor_on_weapon_before_tilt)
+end
